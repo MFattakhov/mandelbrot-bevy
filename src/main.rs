@@ -47,10 +47,18 @@ fn main() {
             Update,
             mouse_navigation.run_if(input_just_pressed(MouseButton::Left)),
         )
+        .add_systems(
+            Update,
+            keyboard_navigation_zoom_in.run_if(input_just_pressed(KeyCode::Up)),
+        )
+        .add_systems(
+            Update,
+            keyboard_navigation_zoom_out.run_if(input_just_pressed(KeyCode::Down)),
+        )
         .run();
 }
 
-fn recalculate_coordinates(px: f32, py: f32) {
+fn recalculate_coordinates(px: f32, py: f32, zoom: f32) {
     let ul: &mut Vec2 = &mut lock_ul();
     let lr: &mut Vec2 = &mut lock_lr();
 
@@ -60,7 +68,7 @@ fn recalculate_coordinates(px: f32, py: f32) {
     *ul += m - c;
     *lr += m - c;
 
-    let padding = (c - *ul) / 8.;
+    let padding = (c - *ul) / 8. * zoom;
     *ul += padding;
     *lr -= padding;
 }
@@ -107,7 +115,35 @@ fn mouse_navigation(
         .expect("Didn't find cursor")
         / vec2(SIZE.0, SIZE.1);
 
-    recalculate_coordinates(position.x, position.y);
+    recalculate_coordinates(position.x, position.y, 1.0);
+
+    let previous = previous_image.single();
+    commands.entity(previous).despawn_recursive();
+
+    redraw(commands, meshes, complex_plane_materials)
+}
+
+fn keyboard_navigation_zoom_in(
+    mut commands: Commands,
+    previous_image: Query<Entity, With<Image>>,
+    meshes: ResMut<Assets<Mesh>>,
+    complex_plane_materials: ResMut<Assets<CompexPlaneMaterial>>,
+) {
+    recalculate_coordinates(0.5, 0.5, 1.0);
+
+    let previous = previous_image.single();
+    commands.entity(previous).despawn_recursive();
+
+    redraw(commands, meshes, complex_plane_materials)
+}
+
+fn keyboard_navigation_zoom_out(
+    mut commands: Commands,
+    previous_image: Query<Entity, With<Image>>,
+    meshes: ResMut<Assets<Mesh>>,
+    complex_plane_materials: ResMut<Assets<CompexPlaneMaterial>>,
+) {
+    recalculate_coordinates(0.5, 0.5, -1.0);
 
     let previous = previous_image.single();
     commands.entity(previous).despawn_recursive();
