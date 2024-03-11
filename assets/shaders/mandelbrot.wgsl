@@ -25,7 +25,7 @@ fn fragment(
 
         if (z.x * z.x + z.y * z.y > 4.0) {
             let t = 1.0 - f32(i) / f32(max_iterations);
-            return vec4(t, t, t, 1.0);
+            return vec4(1.0, t, t, 1.0);
         }
     }
 

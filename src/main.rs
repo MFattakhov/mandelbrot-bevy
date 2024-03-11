@@ -11,7 +11,7 @@ use bevy_shader_utils::ShaderUtilsPlugin;
 use lazy_static::lazy_static;
 use std::sync::{Arc, Mutex};
 
-const SIZE: (f32, f32) = (1000.0, 1000.0);
+const SIZE: (f32, f32) = (750.0, 750.0);
 
 lazy_static! {
     static ref UL: Arc<Mutex<Vec2>> = Arc::new(Mutex::new(vec2(-0.75, 0.75)));
@@ -31,6 +31,7 @@ fn main() {
         primary_window: Some(Window {
             resolution: WindowResolution::new(SIZE.0, SIZE.1),
             resizable: false,
+            title: "Mandelbrot Set Explorer".into(),
             ..default()
         }),
         ..default()

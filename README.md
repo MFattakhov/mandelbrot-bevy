@@ -2,6 +2,8 @@
 
 Just run `cargo run --release` to explore!
 
+![screenshot](./screenshot.png)
+
 Click left mouse to zoom into cursos position.
 
 Use Up and Down keys to zoom in and zoom out.
